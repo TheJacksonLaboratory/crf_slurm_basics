@@ -1,3 +1,8 @@
+## simple example python program
+##   counts number of lines in file
+##   single argument is path to file
+##   reports input file path and number of lines to stdout
+
 import sys
 
 if len(sys.argv) != 2:

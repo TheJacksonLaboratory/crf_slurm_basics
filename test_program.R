@@ -1,5 +1,10 @@
 #!/home/kostim/bin/Rscript
 
+## simple example executable R script
+##   counts number of lines in file
+##   single argument is path to file
+##   reports input file path and number of lines to stdout
+
 args <- commandArgs(trailingOnly=T)
 
 if(length(args) != 1) stop("Usage: test.R file_in.txt")
