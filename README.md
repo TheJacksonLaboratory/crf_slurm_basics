@@ -35,7 +35,7 @@ python3 test_program.R test_input3.txt
 
 ### Running a basic slurm bash script
 
-As you may know, we can execute several commands in sequence using a bash script. The following bash script will first determine the number of lines in the input file using the bash `grep` command, then using the python example script, then finally with the R example script:
+As you may know, we can execute several commands in sequence using a bash script. The bash script `ex1.sh` will first determine the number of lines in the input file using the bash `grep` command, then using the python example script, then finally with the R example script:
 
 ```
 ## count number of lines in files three different ways:
@@ -60,7 +60,7 @@ squeue -u $(whoami)                     ## -u limit output to this specific user
 ## scancel -u $(whoami)                 ## kill all this users jobs
 ```
 
-After the slurm job finishes, the job will no longer show up using the `squeue` command. However, you can use the JOBID to find out what happened to the job (exit codes, timing, resource usage, etc) using the slurm `sacct -j <JOBID>` command. The `ex1.sh` script specifies the `sbatch` `-o` and `-e` options, which indicate where `stdout` and `stderr` streams should be directed. In this example, `stdout` and `stderr` are directed to separate files in the `logs` subdirectory within `slurm_basics` directory. The files are named using the job name and the jobid, so subsquent invocations will not overwrite older log files. Several useful environment variables set by slurm were printed out the the log files. These include identifiers such as the `JOBID`, as well as resources such as the number of compute nodes allocated `SLURM_NNODES`, the number of CPUs allocated per node `SLURM_JOB_CPUS_PER_NODE` and the amount of memory allocated per node `SLURM_MEM_PER_NODE`. So you can view how the allocations change with different invocations. We can change resource allocations from the defaults specified in the batch file `ex1.sh`, by overriding them from the command line: 
+After the slurm job finishes, the job will no longer show up using the `squeue` command. However, you can use the `JOBID` to find out what happened to the job (exit codes, timing, resource usage, etc) using the slurm `sacct -j <JOBID>` command. The `ex1.sh` script specifies the `sbatch` `-o` and `-e` options, which indicate where `stdout` and `stderr` streams should be directed. In this example, `stdout` and `stderr` are directed to separate files in the `logs` subdirectory within `slurm_basics` directory. The files are named using the job name and the jobid, so subsquent invocations will not overwrite older log files. Several useful environment variables set by slurm were printed out the the log files. These include identifiers such as the `JOBID`, as well as resources such as the number of compute nodes allocated `SLURM_NNODES`, the number of CPUs allocated per node `SLURM_JOB_CPUS_PER_NODE` and the amount of memory allocated per node `SLURM_MEM_PER_NODE`. So you can view how the allocations change with different invocations. We can change resource allocations from the defaults specified in the batch file `ex1.sh`, by overriding them from the command line: 
 
 ```
 sbatch ex1.sh test_input1.txt                ## allocation using defaults specified using SBATCH directivers in ex1.sh
