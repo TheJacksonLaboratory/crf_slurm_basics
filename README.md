@@ -71,7 +71,7 @@ sbatch -c 4 --mem 8G ex1.sh test_input3.txt  ## override number of cpus/node as 
 Normally `sbatch` queues a job, prints out the `JOBID` for the queued job, and returns immediately. The exit status will be that of the `sbatch` command itself. However, if we use the `-W` (wait) flag for `sbatch`, the `sbatch` command will not exit till the job is done, then exit with the same exit code as the job itself:
 
 ```
-## each command line does not complete until queued job competes; sbatch $? set to same as the job:
+## each command line does not complete until queued job completes; sbatch $? set to same as the job:
 sbatch -W ex1.sh test_input1.txt
 sbatch -W ex1.sh test_input2.txt
 sbatch -W ex1.sh test_input3.txt
@@ -81,7 +81,7 @@ sbatch -W ex1.sh test_input3.txt
 
 ### Running multiple slurm jobs using a master slurm script
 
-More complicated analyses often involve a series of processing steps, some of which can proceed in parallel, while others can only proceed after preceding steps are completed. Each step may need a different resource allocation and you may want to log results from individual steps separately. All this can be accomplished by calling the `sbatch` command from within a 'master' slurm script. Here we will call the slurm script `ex2.sh`, which in turn calls `ex1.sh` on each of the example input files several times. Some of the `ex1.sh` calls are allowed to proceed in parallel and others are forced to occur sequentially using the `-W` flag to `sbatch`. Some of the jobs are launched using pre-defined input file names, while others are launched using a file matching pattern for the input files (so the exact number and names of input files need not be known in advance). It is worth noting that resource allocations for `ex2.sh` are independent of the subsequent allocations for the `ex1.sh` invocations. So the master script need can use minimal resources even if the jobs it is launching (using `sbatch` or `srun`) require much larger allocations.
+More complicated analyses often involve a series of processing steps, some of which can proceed in parallel, while others can only proceed after preceding steps have completed. Each step may need a different resource allocation and you may want to log results from individual steps separately. All this can be accomplished by calling the `sbatch` command from within a 'master' slurm script. Here we will call the slurm script `ex2.sh`, which in turn calls `ex1.sh` on each of the example input files several times. Some of the `ex1.sh` calls are allowed to proceed in parallel and others are forced to occur sequentially using the `-W` flag to `sbatch`. Some of the jobs are launched using pre-defined input file names, while others are launched using a file matching pattern for the input files (so the exact number and names of input files need not be known in advance). It is worth noting that resource allocations for `ex2.sh` are independent of the subsequent allocations for the `ex1.sh` invocations. So the master script need can use minimal resources even if the jobs it is launching (using `sbatch` or `srun`) require much larger allocations.
 
 ```
 ## run interactively with current resources using bash:
@@ -90,6 +90,8 @@ bash ex2.sh
 ## run as a batch job, using new resource allocations:
 sbatch ex2.sh
 ```
+
+In the interactive example above, `ex2.sh` is run using the user's shell's current resource allocations. However, since `ex2.sh` internally uses `sbatch` to launch `ex1.sh` jobs, the `ex1.sh` jobs will get new resources allocations that can be different than those of the current user's shell.
 
 When we use the `-W` flag to `sbatch`, the program hangs until the queued job has been completed. However, we often want the master script to exit after queueing a number of job stages, where each stage must be executed in a certain sequence. One relatively straightforward way of doing this is by capturing the `JOBID` of one queued job returned by the `sbatch` command, then using that `JOBID` together with the `-d` (dependency) flag for `sbatch` when queueing jobs that depend on the first job. This approach allows for far more flexible and complicated dependency patterns than can conveniently be achieved using the `-W` flag. The `ex3.sh` example slurm script demonstrates this approach in action. You can run `ex3.sh` using `bash` or `sbatch` as demonstrated for `ex2.sh`.
 
