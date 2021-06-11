@@ -1,4 +1,4 @@
-#!/home/kostim/bin/Rscript
+#!/bin/env Rscript
 
 ## simple example executable R script
 ##   counts number of lines in file
